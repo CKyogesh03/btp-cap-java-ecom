@@ -1,0 +1,72 @@
+<mvc:View
+    controllerName="ecom.controller.ProductSearchResult"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:m="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <m:Page
+        id="productSearchResultPage"
+        showNavButton="true"
+        navButtonPress="onNavBack">
+
+        <m:content>
+            <m:VBox class="sapUiMediumMargin">
+
+                <!-- Header -->
+                <m:HBox alignItems="Center" justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                    <m:VBox>
+                        <m:Title level="H3" text="Search Results"/>
+                        <m:Text text="Showing results for: {view>/SearchText}" class="sapUiTinyMarginTop"/>
+                    </m:VBox>
+                    <m:BusyIndicator visible="{view>/IsLoading}"/>
+                </m:HBox>
+
+                <!-- List: Items bound here is the key to fixing the second-search bug -->
+                <m:List
+                    id="productsList"
+                    items="{/Products}"
+                    visible="{= !${view>/IsLoading}}"
+                    noDataText="No products found">
+
+                    <m:CustomListItem type="Active" press="onProductSelected">
+                        <m:HBox class="sapUiSmallMargin" alignItems="Stretch">
+                            
+                            <m:Image src="{imageUrl}" height="100px" width="100px" class="sapUiSmallMarginEnd"/>
+
+                            <!-- Product Details Section -->
+                            <m:VBox >
+                                <m:HBox justifyContent="SpaceBetween">
+                                    <m:Title text="{name}" level="H4"/>
+                                    <m:Button icon="sap-icon://heart" type="Transparent" press="onFavoritePress"/>
+                                </m:HBox>
+                                
+                                <m:RatingIndicator value="4" maxValue="5" iconSize="0.8rem" enabled="false"/>
+                                <m:Text text="{description}" maxLines="2" class="sapUiTinyMarginTop sapUiTextMuted"/>
+                                
+                                <m:ObjectStatus
+                                    text="{= ${stocks} > 0 ? 'In Stock' : 'Out of Stock'}"
+                                    state="{= ${stocks} > 0 ? 'Success' : 'Error'}"
+                                    class="sapUiTinyMarginTop"/>
+                            </m:VBox>
+
+                            <!-- Price Section -->
+                            <m:VBox alignItems="End" justifyContent="Center" width="120px">
+                                <m:ObjectNumber number="Rs {price}" state="Success"/>
+                                <m:Text text="Rs {= (${price} * 1.14).toFixed(2)}" class="sapUiSmallText sapUiTextMuted strikethrough"/>
+                            </m:VBox>
+
+                        </m:HBox>
+                    </m:CustomListItem>
+                </m:List>
+            </m:VBox>
+        </m:content>
+
+        <m:footer>
+            <m:Toolbar>
+                <m:Text text="Items found: {view>/ResultCount}"/>
+                <m:ToolbarSpacer/>
+                <m:Button text="Back to Shopping" press="onNavBack"/>
+            </m:Toolbar>
+        </m:footer>
+    </m:Page>
+</mvc:View>

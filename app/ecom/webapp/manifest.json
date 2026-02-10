@@ -1,0 +1,154 @@
+{
+  "_version": "1.81.0",
+  "sap.app": {
+    "id": "ecom",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.20.2",
+      "toolsId": "a3d470bf-cbc8-4992-8867-3d37a8679397"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/EcommerceService/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.144.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "ecom.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "ecom.view",
+        "async": true,
+        "viewPath": "ecom.view"
+      },
+      "routes": [
+        {
+          "name": "Routeecommerce",
+          "pattern": ":?query:",
+          "target": [
+            "Targetecommerce"
+          ]
+        },
+        {
+          "name": "productSearchResult",
+          "pattern": "productSearchResult/{searchText}",
+          "target": "productSearchResult"
+        },
+        {
+          "name": "productDetailPage",
+          "pattern": "productDetailPage/{id}",
+          "target": "productDetailPage"
+        },
+        {
+          "name": "cart",
+          "pattern": "cart",
+          "target": "cart"
+        },
+        {
+          "name": "map",
+          "pattern": "map",
+          "target": "map"
+        }
+      ],
+      "targets": {
+        "Targetecommerce": {
+          "id": "ecommerce",
+          "name": "ecommerce"
+        },
+        "productSearchResult": {
+					"id": "ProductSearchResult",
+					"name": "ProductSearchResult",
+					"level" : 2
+				},
+        "productDetailPage":{
+          "id": "ProductDetailPage",
+          "name" : "ProductDetailPage"
+        },
+        "cart":{
+          "id": "Cart",
+          "name" : "Cart"
+        },
+        "map":{
+          "id": "map",
+          "name" : "Map"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "ecom.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  }
+}

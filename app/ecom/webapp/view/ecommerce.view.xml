@@ -1,0 +1,119 @@
+<mvc:View controllerName="ecom.controller.ecommerce"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    height="100%">
+
+    <!-- showHeader="false" removes the redundant second navbar -->
+    <Page id="page" showHeader="false" backgroundDesign="List">
+        <content>
+            
+            <!-- 1. MAIN NAVBAR (Flipkart Style) -->
+            <tnt:ToolHeader id="shellLikeToolHeader" class="sapUiTinyMarginBottom" >
+            <Image
+                src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png"
+                width="40px"
+                height="40px"
+                class="sapUiSmallMarginBegin" />
+
+                
+                <Title text="Ecom" titleStyle="H3" class="sapUiSmallMarginEnd" />
+
+                <ToolbarSpacer />
+
+                <!-- Search Functionality (Logic Kept) -->
+                <SearchField
+                    width="40%"
+                    id="searchField"
+                    placeholder="Search for products, brands and more"
+                    search="onSearchButtonPressed" />
+
+                <ToolbarSpacer />
+
+                <!-- Customer Selection (Logic Kept) -->
+                <Select
+                    id="customerSelect"
+                    width="180px"
+                    forceSelection="false"
+                    selectedKey="{view>/SelectedCustomer}"
+                    items="{/Customers}"
+                    change="onCustomerSelected">
+                    <core:Item key="{name}" text="{name}" />
+                </Select>
+
+                <Button icon="sap-icon://cart" type="Transparent" tooltip="Cart" press="onCartPressed" />
+            </tnt:ToolHeader>
+
+            <VBox class="sapUiSmallMargin">
+                
+             
+                <HBox justifyContent="SpaceAround" class="sapUiSmallMarginBottom sapUiTinyMarginTop">
+                    <VBox alignItems="Center">
+                        <Avatar src="https://cdn-icons-png.flaticon.com/512/3659/3659899.png" displaySize="M" backgroundColor="Transparent" />
+                        <Text text="Electronics" class="sapUiTinyMarginTop" />
+                    </VBox>
+                    <VBox alignItems="Center">
+                        <Avatar src="https://cdn-icons-png.flaticon.com/512/3050/3050231.png" displaySize="M" backgroundColor="Transparent" />
+                        <Text text="Fashion" class="sapUiTinyMarginTop" />
+                    </VBox>
+                    <VBox alignItems="Center">
+                        <Avatar src="https://cdn-icons-png.flaticon.com/512/3081/3081840.png" displaySize="M" backgroundColor="Transparent" />
+                        <Text text="Grocery" class="sapUiTinyMarginTop" />
+                    </VBox>
+                    <VBox alignItems="Center">
+                        <Avatar src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" displaySize="M" backgroundColor="Transparent" />
+                        <Text text="Books" class="sapUiTinyMarginTop" />
+                    </VBox>
+                    <VBox alignItems="Center">
+                        <Avatar src="https://cdn-icons-png.flaticon.com/512/2742/2742662.png" displaySize="M" backgroundColor="Transparent" />
+                        <Text text="Appliances" class="sapUiTinyMarginTop" />
+                    </VBox>
+                </HBox>
+
+                <!-- 3. HERO CAROUSEL (Static Banners) -->
+                <Carousel height="280px" class="sapUiSmallMarginBottom" loop="true">
+                    <Image src="https://img.freepik.com/free-vector/horizontal-banner-online-fashion-sale_23-2148585404.jpg"  />
+                    <Image src="https://static.vecteezy.com/system/resources/thumbnails/004/299/835/small/online-shopping-on-phone-buy-sell-business-digital-web-banner-application-money-advertising-payment-ecommerce-illustration-search-free-vector.jpg" mode="Stretch" />
+                </Carousel>
+
+                <!-- 4. PRODUCT SECTION TITLE -->
+                <HBox alignItems="Center" justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                    <Title text="Best of Electronics" level="H2" />
+                    <Button text="VIEW ALL" type="Emphasized" />
+                </HBox>
+
+                <!-- 5. PRODUCT GRID (Flipkart Card Style) -->
+                <f:GridList id="productsGrid" items="{/Products}">
+                    <f:GridListItem>
+                        <VBox class="sapUiSmallMargin">
+                            <VBox alignItems="Center" justifyContent="Center" height="180px">
+                                <!-- Bind to your imageUrl property -->
+                                <Image src="{imageUrl}" height="140px" densityAware="false" />
+                            </VBox>
+                            
+                            <VBox class="sapUiTinyMarginTop">
+                                <Title text="{name}" level="H4" wrapping="false" />
+                                <ObjectStatus text="{category}" state="Information" />
+                                
+                                <HBox alignItems="Center" justifyContent="SpaceBetween" class="sapUiTinyMarginTop">
+                                    <VBox>
+                                        <ObjectNumber 
+                                            number="{price}" 
+                                            unit="{currency_code}" 
+                                            state="Success" />
+                                        <ObjectStatus text="Free Delivery" state="Success" />
+                                    </VBox>
+                                    <Button icon="sap-icon://cart-add" type="Transparent" />
+                                </HBox>
+                            </VBox>
+                        </VBox>
+                    </f:GridListItem>
+                </f:GridList>
+
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

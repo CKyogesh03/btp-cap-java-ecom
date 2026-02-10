@@ -1,0 +1,97 @@
+<mvc:View
+    controllerName="ecom.controller.Cart"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout"
+    xmlns:f="sap.f"
+    xmlns:card="sap.f.cards"
+    xmlns:core="sap.ui.core">
+
+    <Page id="cartPage" title="My Shopping Cart" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <!-- Empty Cart State -->
+            <VBox visible="{= ${cart>/items}.length === 0 }" alignItems="Center" justifyContent="Center" class="sapUiLargeMargin">
+                <items>
+                    <!-- FIX: Icons are child controls, not aggregations -->
+                    <core:Icon src="sap-icon://cart" size="4rem" color="Default" class="sapUiMediumMarginBottom"/>
+                    <Title text="Your cart is empty" />
+                    <Button text="Start Shopping" press=".onNavBack" type="Emphasized" class="sapUiSmallMarginTop"/>
+                </items>
+            </VBox>
+
+            <!-- Active Cart Content -->
+            <layout:Grid defaultSpan="XL8 L8 M12 S12" visible="{= ${cart>/items}.length > 0 }">
+                
+                <!-- Left: Items List -->
+                <List id="cartItemsList" items="{cart>/items}" headerText="Items" class="sapUiNoContentPadding">
+                    <CustomListItem>
+                        <HBox class="sapUiSmallMargin" alignItems="Center" wrap="Wrap">
+                            <Image src="{cart>imageUrl}" width="80px" height="80px" class="sapUiSmallMarginEnd" />
+                            
+                            <VBox>
+                                <!-- FIX: Removed 'flex'. Use layoutData instead -->
+                                <layoutData>
+                                    <FlexItemData growFactor="1" />
+                                </layoutData>
+                                <Title text="{cart>productName}" level="H4" />
+                                <Text text="Unit Price: ₹{cart>unitPrice}" class="sapUiTextMuted" />
+                            </VBox>
+
+                            <VBox alignItems="End" class="sapUiSmallMarginEnd">
+                                <StepInput 
+                                    value="{cart>quantity}" 
+                                    min="1" 
+                                    width="120px"
+                                    change=".onQuantityChange" />
+                                <!-- FIX: Text has no 'fontStyle'. Using CSS or Label design -->
+                                <Label text="Total: ₹{cart>totalPrice}" design="Bold" class="sapUiTinyMarginTop" />
+                            </VBox>
+
+                            <Button icon="sap-icon://delete" type="Transparent" press=".onRemoveItem" />
+                        </HBox>
+                    </CustomListItem>
+                </List>
+
+                <!-- Right: Summary Card -->
+                <VBox class="sapUiSmallMargin">
+                    <layoutData>
+                        <layout:GridData span="XL4 L4 M12 S12" />
+                    </layoutData>
+                    <f:Card>
+                        <f:header>
+                            <!-- FIX: Use card:Header (sap.f.cards.Header) -->
+                            <card:Header title="Order Summary" />
+                        </f:header>
+                        <f:content>
+                            <VBox class="sapUiMediumMargin">
+                                <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                                    <Text text="Subtotal" />
+                                    <Text text="₹{cart>/totalAmount}" />
+                                </HBox>
+                                <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                                    <Text text="Delivery Cost" />
+                                    <!-- FIX: Buttons don't have 'color'. Text can use semantic colors -->
+                                    <ObjectStatus text="₹{cart>/deliveryCost}" state="Success" />
+                                </HBox>
+                                
+                                <!-- FIX: 'Divider' isn't a VBox aggregation. Use HTML or CSS -->
+                                <core:HTML content='&lt;hr style="border: 0; border-top: 1px solid #ecc;" /&gt;' />
+                                
+                                <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+                                    <Title text="Total Amount" level="H3" />
+                                    <Title text="₹{= Number(${cart>/totalAmount}) + Number(${cart>/deliveryCost}) }" level="H3" />
+                                </HBox>
+                                <Button 
+                                    text="Place Order" 
+                                    type="Accept" 
+                                    width="100%" 
+                                    class="sapUiMediumMarginTop" 
+                                    press=".onPlaceOrder" />
+                            </VBox>
+                        </f:content>
+                    </f:Card>
+                </VBox>
+            </layout:Grid>
+        </content>
+    </Page>
+</mvc:View>

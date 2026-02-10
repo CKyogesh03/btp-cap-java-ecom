@@ -1,0 +1,260 @@
+/* ============================================
+   PRODUCT SEARCH RESULT - PREMIUM STYLING
+   ============================================ */
+
+/* Results Header */
+.resultsHeader {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 1rem;
+    border-radius: 8px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.searchTermText {
+    font-weight: 600 !important;
+    color: #0070ba !important;
+    font-size: 1rem !important;
+}
+
+/* Products List */
+.productsList {
+    border: none !important;
+    background: transparent !important;
+}
+
+.productListItem {
+    background: #ffffff !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    margin-bottom: 0.5rem !important;
+    border-radius: 4px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.productListItem:hover {
+    background: #f8f9fa !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    border-color: #e8e8e8 !important;
+}
+
+/* Product Container */
+.productContainer {
+    padding: 1rem !important;
+}
+
+/* Product Image Wrapper */
+.productImageWrapper {
+    background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    min-width: 180px;
+}
+
+.productImage {
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.productListItem:hover .productImage {
+    transform: scale(1.05);
+}
+
+/* Product Details */
+.productDetails {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Badges */
+.sponsoredBadge {
+    color: #999 !important;
+    font-size: 0.75rem !important;
+}
+
+.assuredBadge {
+    background: #f0f0f0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    color: #0070ba !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+}
+
+/* Product Name */
+.productName {
+    color: #003d82 !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+    max-width: 600px;
+}
+
+/* Rating Indicator */
+.ratingIndicator {
+    color: #ffa500 !important;
+}
+
+/* Features List */
+.featuresList {
+    margin: 0.25rem 0;
+}
+
+.bulletPoint {
+    color: #999;
+    margin-right: 0.25rem;
+}
+
+/* Price Section */
+.priceSection {
+    min-width: 200px;
+    text-align: right;
+}
+
+.priceAmount {
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: #0070ba !important;
+}
+
+.originalPrice {
+    color: #999 !important;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.discountBadge {
+    color: #d04d47 !important;
+    font-weight: 600 !important;
+}
+
+.stockStatus {
+    color: #107e3e !important;
+    font-weight: 500 !important;
+}
+
+/* Action Buttons */
+.actionButtons {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.sapUiSmallSize {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+}
+
+/* No Results Container */
+.noResultsContainer {
+    padding: 3rem;
+    text-align: center;
+}
+
+.noResultsIcon {
+    font-size: 3.5rem !important;
+    color: #ccc;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .productImageWrapper {
+        min-width: 140px;
+    }
+    
+    .productImage {
+        height: 120px !important;
+        width: 120px !important;
+    }
+    
+    .priceSection {
+        min-width: 150px;
+    }
+    
+    .priceAmount {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .productContainer {
+        padding: 0.75rem !important;
+    }
+    
+    .productImageWrapper {
+        min-width: 100px;
+    }
+    
+    .productImage {
+        height: 90px !important;
+        width: 90px !important;
+    }
+    
+    .productDetails {
+        margin: 0 0.5rem;
+    }
+    
+    .priceSection {
+        min-width: 120px;
+        padding-left: 1rem;
+    }
+    
+    .productName {
+        font-size: 0.95rem !important;
+        max-width: 100%;
+    }
+    
+    .actionButtons {
+        flex-direction: column;
+        margin-top: 0.75rem;
+    }
+    
+    .actionButtons .sapUiBtn {
+        width: 100%;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.productListItem {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Text Colors */
+.sapUiTextMuted {
+    color: #666 !important;
+}
+
+.sapUiNegativeText {
+    color: #d04d47 !important;
+}
+
+/* Scrollbar Styling */
+.productsList::-webkit-scrollbar {
+    width: 8px;
+}
+
+.productsList::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.productsList::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+.productsList::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}

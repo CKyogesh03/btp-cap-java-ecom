@@ -1,0 +1,89 @@
+<mvc:View
+    controllerName="ecom.controller.ProductDetailPage"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout">
+
+    <Page
+        id="productDetailPage"
+        title="Product Details"
+        showNavButton="true"
+        navButtonPress=".onNavBack">
+
+        <content>
+            <!-- FlexBox with renderType="Bare" ensures it acts like a normal div -->
+            <FlexBox 
+                width="100%" 
+                direction="Row" 
+                wrap="Wrap" 
+                renderType="Bare"
+                class="sapUiResponsiveMargin">
+
+                <!-- Left Column (Image) -->
+                <VBox class="sapUiMediumMarginEnd sapUiSmallMarginBottom">
+                    <layoutData>
+                        <!-- This forces the image container to take up 40% width -->
+                        <FlexItemData baseSize="40%" growFactor="1" />
+                    </layoutData>
+                    <Image
+                        src="{imageUrl}"
+                        width="100%"
+                        densityAware="false" />
+                </VBox>
+
+                <!-- Right Column (Details) -->
+                <VBox>
+                    <layoutData>
+                        <!-- This forces the details to take up 50% width -->
+                        <FlexItemData baseSize="50%" growFactor="2" />
+                    </layoutData>
+                    
+                    <ObjectHeader
+                        title="{name}"
+                        number="{
+                            parts: [{path: 'price'}, {path: 'currency'}],
+                            type: 'sap.ui.model.type.Currency',
+                            formatOptions: { showMeasure: true }
+                        }">
+                        <statuses>
+                            <ObjectStatus
+                                text="{path: 'stocks', formatter: '.formatter.stockText'}"
+                                state="{path: 'stocks', formatter: '.formatter.stockState'}" />
+                        </statuses>
+                    </ObjectHeader>
+
+                    <VBox class="sapUiSmallMarginBottom">
+                        <Title text="Description" level="H4" class="sapUiTinyMarginBottom"/>
+                        <Text text="{description}" wrapping="true" />
+                    </VBox>
+
+                    <HBox alignItems="Center" class="sapUiSmallMarginBottom">
+                        <Label text="Quantity:" class="sapUiSmallMarginEnd" />
+                        <StepInput
+                            value="{ui>/quantity}"
+                            min="1"
+                            max="{stocks}"
+                            width="140px"
+                            enabled="{path: 'stocks', formatter: '.formatter.isStockAvailable'}" />
+                    </HBox>
+
+                    <HBox>
+                        <Button
+                            text="Add to Cart"
+                            icon="sap-icon://cart-add"
+                            type="Emphasized"
+                            enabled="{path: 'stocks', formatter: '.formatter.isStockAvailable'}"
+                            press=".onAddToCart"
+                            class="sapUiSmallMarginEnd" />
+                        <Button
+                            text="Buy Now"
+                            icon="sap-icon://credit-card"
+                            type="Accept"
+                            enabled="{path: 'stocks', formatter: '.formatter.isStockAvailable'}"
+                            press=".onBuyNow" />
+                    </HBox>
+                </VBox>
+            </FlexBox>
+        </content>
+    </Page>
+</mvc:View>
