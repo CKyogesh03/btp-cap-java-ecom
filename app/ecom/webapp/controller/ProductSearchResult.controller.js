@@ -72,22 +72,32 @@ sap.ui.define([
         /**
          * FIXED NAVIGATION LOGIC
          */
-        onProductSelected(oEvent) {
-            // Since 'press' is on CustomListItem, the Source is the item.
-            const oItem = oEvent.getSource();
-            const oContext = oItem.getBindingContext();
-            
-            if (oContext) {
-                // Get the ID (make sure "ID" matches the property name in your OData service)
-                const sProductId = oContext.getProperty("ID");
-                
-                console.log("Navigating to Product ID:", sProductId);
+    onProductSelected(oEvent) {
+    const oItem = oEvent.getSource();
+    const oContext = oItem.getBindingContext();
 
-                this.getOwnerComponent().getRouter().navTo("productDetailPage", {
-                    id: sProductId
-                });
-            }
-        },
+    if (!oContext) {
+        MessageToast.show("Loading product...");
+        return;
+    }
+
+    const oProduct = oContext.getObject();   // <-- THIS forces data resolution
+
+    if (!oProduct || !oProduct.ID) {
+        MessageToast.show("Product data not ready");
+        return;
+    }
+
+    const sProductId = oProduct.ID;
+
+    console.log("Navigating to Product ID:", sProductId);
+
+    this.getOwnerComponent().getRouter().navTo("productDetailPage", {
+        id: sProductId
+    });
+}
+
+,
 
         onNavBack() {
             this.getOwnerComponent().getRouter().navTo("Routeecommerce");

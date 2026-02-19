@@ -46,9 +46,9 @@
                             formatOptions: { showMeasure: true }
                         }">
                         <statuses>
-                            <ObjectStatus
-                                text="{path: 'stocks', formatter: '.formatter.stockText'}"
-                                state="{path: 'stocks', formatter: '.formatter.stockState'}" />
+                         <ObjectStatus
+    text="{path: 'stock/quantity', formatter: '.formatter.stockText'}"
+    state="{path: 'stock/quantity', formatter: '.formatter.stockState'}" />
                         </statuses>
                     </ObjectHeader>
 
@@ -59,12 +59,13 @@
 
                     <HBox alignItems="Center" class="sapUiSmallMarginBottom">
                         <Label text="Quantity:" class="sapUiSmallMarginEnd" />
-                        <StepInput
-                            value="{ui>/quantity}"
-                            min="1"
-                            max="{stocks}"
-                            width="140px"
-                            enabled="{path: 'stocks', formatter: '.formatter.isStockAvailable'}" />
+                <StepInput
+    value="{ui>/quantity}"
+    min="1"
+    max="{stock/quantity}"
+    width="140px"
+    enabled="{path: 'stock/quantity', formatter: '.formatter.isStockAvailable'}" />
+
                     </HBox>
 
                     <HBox>
@@ -72,18 +73,60 @@
                             text="Add to Cart"
                             icon="sap-icon://cart-add"
                             type="Emphasized"
-                            enabled="{path: 'stocks', formatter: '.formatter.isStockAvailable'}"
+                            
                             press=".onAddToCart"
                             class="sapUiSmallMarginEnd" />
                         <Button
                             text="Buy Now"
                             icon="sap-icon://credit-card"
                             type="Accept"
-                            enabled="{path: 'stocks', formatter: '.formatter.isStockAvailable'}"
+                            enabled="{path: 'stock/quantity', formatter: '.formatter.isStockAvailable'}"
                             press=".onBuyNow" />
                     </HBox>
                 </VBox>
             </FlexBox>
+
+            <VBox class="sapUiLargeMarginTop">
+
+    <Title text="Customer Reviews" level="H3"/>
+
+    <VBox items="{reviews>/reviews}">
+
+        <items>
+
+            <VBox class="sapUiSmallMarginBottom sapUiSmallPadding sapUiResponsiveContentPadding sapUiBorder">
+
+                <HBox justifyContent="SpaceBetween">
+
+                    <Text
+                        text="{reviews>customer/name}"
+                        class="sapUiTinyMarginBottom"
+                        wrapping="false"/>
+
+                    <ObjectNumber
+                        number="{reviews>rating}"
+                        unit="★"
+                        state="Success"/>
+
+                </HBox>
+
+                <Title
+                    text="{reviews>title}"
+                    level="H5"
+                    class="sapUiTinyMarginBottom"/>
+
+                <Text
+                    text="{reviews>comment}"
+                    wrapping="true"/>
+
+            </VBox>
+
+        </items>
+
+    </VBox>
+
+</VBox>
+
         </content>
     </Page>
 </mvc:View>

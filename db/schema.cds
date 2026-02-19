@@ -60,7 +60,7 @@ entity Products : cuid, managed {
 /* ---------- STOCK ---------- */
 
 entity Stocks : cuid, managed {
-    product    : Association to Products;
+    product    : Association to Products not null;
     quantity   : Integer;
     warehouse  : String(100);
 }
@@ -68,7 +68,7 @@ entity Stocks : cuid, managed {
 /* ---------- CART ---------- */
 
 entity Carts : cuid, managed {
-    customer : Association to Customers;
+    customer : Association to Customers not null;
     items    : Composition of many CartItems
                on items.cart = $self;
 }
@@ -76,8 +76,8 @@ entity Carts : cuid, managed {
 /* ---------- CART ITEMS ---------- */
 
 entity CartItems : cuid, managed {
-    cart     : Association to Carts;
-    product  : Association to Products;
+    cart     : Association to Carts not null;
+    product  : Association to Products not null;
     quantity : Integer;
 }
 
@@ -85,7 +85,7 @@ entity CartItems : cuid, managed {
 
 entity Orders : cuid, managed {
     orderNumber    : String(50);
-    customer       : Association to Customers;
+    customer       : Association to Customers not null;
     orderDate      : DateTime;
     shippingAddress: Association to Addresses;
     billingAddress : Association to Addresses;
@@ -102,8 +102,8 @@ entity Orders : cuid, managed {
 /* ---------- ORDER ITEMS ---------- */
 
 entity OrderItems : cuid, managed {
-    order       : Association to Orders;
-    product     : Association to Products;
+    order       : Association to Orders not null;
+    product     : Association to Products not null;
     quantity    : Integer;
     unitPrice   : Decimal(13,2);
     totalPrice  : Decimal(13,2);
@@ -131,3 +131,7 @@ entity Reviews : cuid, managed {
     comment   : String(500);
     approved  : Boolean default false;
 }
+
+annotate Reviews with @unique: {
+    customer, product
+};

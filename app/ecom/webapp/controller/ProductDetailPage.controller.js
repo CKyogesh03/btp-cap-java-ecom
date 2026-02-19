@@ -22,7 +22,8 @@ sap.ui.define([
 
         onInit: function () {
             const oRouter = this.getOwnerComponent().getRouter();
-            oRouter.getRoute("productDetailPage").attachPatternMatched(this._onRouteMatched, this);
+            oRouter.getRoute("productDetailPage")
+                .attachPatternMatched(this._onRouteMatched, this);
 
             this.getView().setModel(new JSONModel({
                 quantity: 1,
@@ -30,19 +31,32 @@ sap.ui.define([
             }), "ui");
         },
 
+        // 🔥 THIS IS THE MISSING PIECE
         _onRouteMatched: function (oEvent) {
             const sProductId = oEvent.getParameter("arguments").id;
             const oView = this.getView();
-            
+            const oModel = this.getOwnerComponent().getModel();
+
             oView.getModel("ui").setProperty("/quantity", 1);
-            
-            // OData V4 Binding
+
+            const sPath = `/Products(${sProductId})`;
+            console.log("Binding product:", sPath);
+
             oView.bindElement({
-                path: `/Products(${sProductId})`
+                path: sPath,
+                model: undefined, // default OData V4 model
+                events: {
+                    dataReceived: () => {
+                        const oProduct = oView.getBindingContext().getObject();
+                        console.log("Product loaded:", oProduct);
+                    }
+                }
             });
+
+            // 🔥 LOAD REVIEWS USING ODATA FILTER
+            this._loadReviews(sProductId);
         },
 
-        // Using async/await for cleaner flow
         onAddToCart: async function () {
             await this._processCartAction(false);
         },
@@ -51,7 +65,11 @@ sap.ui.define([
             await this._processCartAction(true);
         },
 
+        // =============================
+        // ADD TO CART / BUY NOW
+        // =============================
         _processCartAction: async function (bIsBuyNow) {
+
             const oCustomerStr = localStorage.getItem("gokart_selectedCustomer");
             const oCustomer = oCustomerStr ? JSON.parse(oCustomerStr) : null;
 
@@ -62,38 +80,68 @@ sap.ui.define([
 
             const oView = this.getView();
             const oModel = this.getOwnerComponent().getModel();
+
+            // ✅ Product context now always exists
             const oContext = oView.getBindingContext();
-            
-            if (!oContext) return;
+
+            if (!oContext) {
+                MessageToast.show("Product not loaded");
+                return;
+            }
 
             const oProduct = oContext.getObject();
+
+            if (!oProduct || !oProduct.ID) {
+                MessageToast.show("Invalid product data");
+                return;
+            }
+
             const iQuantity = oView.getModel("ui").getProperty("/quantity");
+
+            if (!iQuantity || iQuantity <= 0) {
+                MessageToast.show("Please select valid quantity");
+                return;
+            }
 
             oView.setBusy(true);
 
             try {
-                /**
-                 * ODATA V4 WAY TO CALL ACTIONS/FUNCTIONS
-                 * We bind to the path of the function and call execute()
-                 */
+                // 🔥 OData V4 CAP Action Call
                 const oActionContext = oModel.bindContext("/addToCart(...)");
-                
-                oActionContext.setParameter("productId", oProduct.ID);
+
                 oActionContext.setParameter("customerId", oCustomer.id);
+                oActionContext.setParameter("productId", oProduct.ID);
                 oActionContext.setParameter("quantity", iQuantity);
+
+                console.log("Sending to CAP:", oCustomer.id, oProduct.ID, iQuantity);
 
                 await oActionContext.execute();
 
+                const oResult = oActionContext.getBoundContext().getObject();
+                console.log("CAP response:", oResult);
+
+                if (!oResult || oResult.success !== true) {
+                    throw new Error(oResult?.message || "Failed to add to cart");
+                }
+
                 oView.setBusy(false);
+
                 if (bIsBuyNow) {
-                    this.getOwnerComponent().getRouter().navTo("cartPage");
+                    this.getOwnerComponent().getRouter().navTo("cartPage", {
+                        cartId: oResult.cartId
+                    });
                 } else {
                     MessageToast.show("Product added to cart!");
                 }
+
             } catch (oError) {
                 oView.setBusy(false);
-                // Handle V4 error messages
-                const sMessage = oError.statusText || "Error adding to cart";
+
+                const sMessage =
+                    oError?.message ||
+                    oError?.error?.message ||
+                    "Error adding to cart";
+
                 MessageToast.show(sMessage);
             }
         },
@@ -105,6 +153,44 @@ sap.ui.define([
             } else {
                 this.getOwnerComponent().getRouter().navTo("Routeecommerce", {}, true);
             }
-        }
+        },
+        _loadReviews: async function (sProductId) {
+
+    const oModel = this.getOwnerComponent().getModel();
+    const oView = this.getView();
+
+    try {
+
+        const oBinding = oModel.bindList(
+            `/Reviews`,
+            null,
+            null,
+            [
+                new sap.ui.model.Filter("product_ID", "EQ", sProductId),
+                new sap.ui.model.Filter("approved", "EQ", true)
+            ],
+            {
+                $expand: "customer",
+                $orderby: "createdAt desc"
+            }
+        );
+
+        const aContexts = await oBinding.requestContexts();
+
+        const aReviews = aContexts.map(ctx => ctx.getObject());
+
+        console.log("Reviews loaded:", aReviews);
+
+        const oReviewModel = new JSONModel({
+            reviews: aReviews
+        });
+
+        oView.setModel(oReviewModel, "reviews");
+
+    } catch (e) {
+        console.error("Error loading reviews", e);
+    }
+}
+
     });
 });

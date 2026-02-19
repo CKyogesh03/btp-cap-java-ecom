@@ -24,7 +24,12 @@
                 <!-- List: Items bound here is the key to fixing the second-search bug -->
                 <m:List
                     id="productsList"
-                    items="{/Products}"
+                     items="{
+        path: '/Products',
+        parameters: {
+            $expand: 'stock'
+        }
+    }"
                     visible="{= !${view>/IsLoading}}"
                     noDataText="No products found">
 
@@ -44,8 +49,8 @@
                                 <m:Text text="{description}" maxLines="2" class="sapUiTinyMarginTop sapUiTextMuted"/>
                                 
                                 <m:ObjectStatus
-                                    text="{= ${stocks} > 0 ? 'In Stock' : 'Out of Stock'}"
-                                    state="{= ${stocks} > 0 ? 'Success' : 'Error'}"
+                                    text="{= ${stock/quantity} > 0 ? 'In Stock' : 'Out of Stock'}"
+                                    state="{= ${stock/quantity} > 0 ? 'Success' : 'Error'}"
                                     class="sapUiTinyMarginTop"/>
                             </m:VBox>
 

@@ -1,0 +1,35 @@
+<mvc:View
+    controllerName="ecom.controller.MyOrders"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+
+<Page title="My Orders" showNavButton="true" navButtonPress=".onNavBack">
+
+    <List id="ordersList" mode="None">
+        <CustomListItem id="orderItemTemplate" press=".onOrderPress" type="Active">
+            <VBox class="sapUiSmallMargin">
+                <HBox justifyContent="SpaceBetween">
+                    <Text text="Order #" />
+                    <Text text="{orderNumber}" />
+                </HBox>
+
+                <HBox justifyContent="SpaceBetween">
+                    <Text text="Date" />
+                    <Text text="{orderDate}" />
+                </HBox>
+
+                <HBox justifyContent="SpaceBetween">
+                    <Text text="Status" />
+                    <ObjectStatus text="{status}" />
+                </HBox>
+
+                <HBox justifyContent="SpaceBetween">
+                    <Text text="Total" />
+                    <Text text="₹{totalAmount}" />
+                </HBox>
+            </VBox>
+        </CustomListItem>
+    </List>
+
+</Page>
+</mvc:View>

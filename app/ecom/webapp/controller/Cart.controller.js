@@ -85,8 +85,58 @@ sap.ui.define([
             });
         },
 
-        onPlaceOrder: function () {
-            MessageBox.success("Order Placed!");
+        onPlaceOrder: async function () {
+            const oCustomerStr = localStorage.getItem("gokart_selectedCustomer");
+            const oCustomer = oCustomerStr ? JSON.parse(oCustomerStr)  : null;
+            if(! oCustomer | ! oCustomer.id ){
+                MessageToast.show("Please login to place order")
+                return;
+            }
+
+            const oModel = this.getOwnerComponent().getModel();
+            const oView = this.getView();
+
+            oView.setBusy(true);
+            // MessageBox.success("Order Placed!");
+            try {
+
+                // 🔥 OData V4 CAP Action Call
+                const oActionContext = oModel.bindContext("/placeOrder(...)");
+
+                oActionContext.setParameter("customerId", oCustomer.id);
+
+                console.log("Sending to CAP:", oCustomer.id);
+
+                await oActionContext.execute();
+
+                const oResult = oActionContext.getBoundContext().getObject();
+                console.log("CAP response:", oResult);
+
+                if (!oResult || oResult.success !== true) {
+                    throw new Error(oResult?.message || "Failed to place order");
+                }
+
+                oView.setBusy(false);
+
+                MessageBox.show(oResult.message);
+                // if (bIsBuyNow) {
+                //     this.getOwnerComponent().getRouter().navTo("cartPage", {
+                //         cartId: oResult.cartId
+                //     });
+                // } else {
+                //     MessageToast.show("Product added to cart!");
+                // }
+
+            } catch (oError) {
+                oView.setBusy(false);
+
+                const sMessage =
+                    oError?.message ||
+                    oError?.error?.message ||
+                    "Error placing order";
+
+                MessageToast.show(sMessage);
+            }
         },
 
         onNavBack: function () {

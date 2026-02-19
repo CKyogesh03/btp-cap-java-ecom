@@ -1,0 +1,70 @@
+<mvc:View
+    controllerName="ecom.controller.OrderDetailPage"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+
+    <Page
+        title="Order Details"
+        showNavButton="true"
+        navButtonPress=".onNavBack">
+
+        <content>
+
+            <!-- ORDER HEADER -->
+            <ObjectHeader
+                title="Order #{orderNumber}"
+                number="{totalAmount}"
+                numberUnit="{currency}"
+                numberState="Success">
+
+                <statuses>
+                    <ObjectStatus text="{status}" state="Information"/>
+                </statuses>
+
+                <attributes>
+                    <ObjectAttribute
+                        title="Order Date"
+                        text="{ path: 'orderDate', type: 'sap.ui.model.type.DateTime' }"/>
+                </attributes>
+            </ObjectHeader>
+
+            <!-- SHIPPING ADDRESS -->
+            <Panel headerText="Shipping Address" class="sapUiSmallMargin">
+                <Text text="{shippingAddress/street}"/>
+                <Text text="{shippingAddress/city}, {shippingAddress/state}"/>
+                <Text text="{shippingAddress/zipCode}, {shippingAddress/country}"/>
+            </Panel>
+
+            <!-- BILLING ADDRESS -->
+            <Panel headerText="Billing Address" class="sapUiSmallMargin">
+                <Text text="{billingAddress/street}"/>
+                <Text text="{billingAddress/city}, {billingAddress/state}"/>
+                <Text text="{billingAddress/zipCode}, {billingAddress/country}"/>
+            </Panel>
+
+            <!-- ORDER ITEMS -->
+            <List
+                headerText="Ordered Items"
+                items="{
+                    path: 'items',
+                    parameters: {
+                        $expand: 'product'
+                    }
+                }">
+
+                <ObjectListItem
+                    title="{product/name}"
+                    number="{totalPrice}"
+                    numberUnit="{currency}"
+                    intro="Qty: {quantity}  ×  {unitPrice}">
+
+                    <firstStatus>
+                        <ObjectStatus text="Price" state="Success"/>
+                    </firstStatus>
+
+                </ObjectListItem>
+            </List>
+
+        </content>
+    </Page>
+</mvc:View>

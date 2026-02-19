@@ -1,0 +1,1 @@
+ID,orderNumber,customer_ID,orderDate,shippingAddress_ID,billingAddress_ID,status,totalAmount,currency_code,createdAt,createdBy,modifiedAt,modifiedBy

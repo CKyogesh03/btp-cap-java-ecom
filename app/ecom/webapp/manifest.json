@@ -44,6 +44,10 @@
   },
   "sap.ui5": {
     "flexEnabled": false,
+    "contentSecurityPolicy": {
+  "policy": "default-src 'self'; img-src 'self' data: blob: https://images.unsplash.com https://source.unsplash.com https://img.freepik.com https://static.vecteezy.com https://cdn-icons-png.flaticon.com;"
+}
+,
     "dependencies": {
       "minUI5Version": "1.144.1",
       "libs": {
@@ -115,6 +119,16 @@
           "target": "cart"
         },
         {
+          "name": "myOrders",
+          "pattern": "myOrders",
+          "target": "myOrders"
+        },
+        {
+          "name": "orderDetailPage",
+          "pattern": "order/{id}",
+          "target": "orderDetailPage"
+        },
+        {
           "name": "map",
           "pattern": "map",
           "target": "map"
@@ -126,21 +140,31 @@
           "name": "ecommerce"
         },
         "productSearchResult": {
-					"id": "ProductSearchResult",
-					"name": "ProductSearchResult",
-					"level" : 2
-				},
-        "productDetailPage":{
+          "id": "ProductSearchResult",
+          "name": "ProductSearchResult",
+          "level": 2
+        },
+        "productDetailPage": {
           "id": "ProductDetailPage",
-          "name" : "ProductDetailPage"
+          "name": "ProductDetailPage",
+          "contextPattern": "/Products(ID={id})"
         },
-        "cart":{
+        "cart": {
           "id": "Cart",
-          "name" : "Cart"
+          "name": "Cart"
         },
-        "map":{
+        "myOrders": {
+          "id": "MyOrders",
+          "name": "MyOrders"
+        },
+        "orderDetailPage": {
+          "id": "OrderDetailPage",
+          "name": "OrderDetailPage",
+          "contextPattern": "/Orders(ID={id})"
+        },
+        "map": {
           "id": "map",
-          "name" : "Map"
+          "name": "Map"
         }
       }
     },
