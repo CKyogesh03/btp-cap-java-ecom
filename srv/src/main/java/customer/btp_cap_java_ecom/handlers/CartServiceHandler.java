@@ -41,6 +41,8 @@ import cds.gen.ecommerceservice.GetCustomerCartContext;
 import cds.gen.ecommerceservice.Orders;
 import cds.gen.ecommerceservice.Orders_;
 import cds.gen.ecommerceservice.PlaceOrderContext;
+import cds.gen.ecommerceservice.RemoveCartItemContext;
+import cds.gen.ecommerceservice.UpdateCartItemQuantityContext;
 import cds.gen.ecommerceservice.GetCustomerCartContext.ReturnType;
 import cds.gen.com.practice.ecommerce.OrderItems_;
 
@@ -194,7 +196,7 @@ public class CartServiceHandler implements EventHandler {
                         db.run(Insert.into(Carts_.class).entry(cartData));
                 }
 
-                // 2️⃣ Check existing cart item
+                // 2️⃣ Check existing cart item with same product, and increase quantity
                 Optional<CartItems> itemOpt = db.run(
                                 Select.from(CartItems_.class)
                                                 .where(i -> i.cart_ID().eq(cartId)
@@ -313,26 +315,25 @@ public class CartServiceHandler implements EventHandler {
 
                 // BILLING AND SHIPPING ADDRESS SETTING
                 String shippingId = db.run(
-                        Select.from(Addresses_.class)
-                        .columns(Addresses_.ID)
-                        .where(a -> a.customer_ID().eq(customerId)
-                                .and(a.type().eq("SHIPPING")))
-                ).first(Addresses.class)
-                .map(Addresses::getId)
-                .orElse(null);
+                                Select.from(Addresses_.class)
+                                                .columns(Addresses_.ID)
+                                                .where(a -> a.customer_ID().eq(customerId)
+                                                                .and(a.type().eq("SHIPPING"))))
+                                .first(Addresses.class)
+                                .map(Addresses::getId)
+                                .orElse(null);
 
                 String billingId = db.run(
-                        Select.from(Addresses_.class)
-                        .columns(Addresses_.ID)
-                        .where(a -> a.customer_ID().eq(customerId)
-                                .and(a.type().eq("BILLING")))
-                ).first(Addresses.class)
-                .map(Addresses::getId)
-                .orElse(null);
+                                Select.from(Addresses_.class)
+                                                .columns(Addresses_.ID)
+                                                .where(a -> a.customer_ID().eq(customerId)
+                                                                .and(a.type().eq("BILLING"))))
+                                .first(Addresses.class)
+                                .map(Addresses::getId)
+                                .orElse(null);
 
                 order.put("shippingAddress_ID", shippingId);
                 order.put("billingAddress_ID", billingId);
-
 
                 db.run(Insert.into(Orders_.class).entry(order));
 
@@ -393,6 +394,95 @@ public class CartServiceHandler implements EventHandler {
                 context.setResult(allowed);
         }
 
-  
+        @On(event = "updateCartItemQuantity")
+        public void updateCartItemQuantity(UpdateCartItemQuantityContext context) {
+
+                String cartItemId = context.getCartItemId();
+                Integer quantity = context.getQuantity();
+
+                ActionResponse response = ActionResponse.create();
+
+                // 1️⃣ Validate input
+                if (cartItemId == null || quantity == null) {
+                        response.setSuccess(false);
+                        response.setMessage("Invalid input");
+                        // context.setResult(response);
+                        return;
+                }
+
+                // 2️⃣ Check cart item exists
+                Optional<CartItems> itemOpt = db.run(
+                                Select.from(CartItems_.class)
+                                                .where(ci -> ci.ID().eq(cartItemId)))
+                                .first();
+
+                if (itemOpt.isEmpty()) {
+                        response.setSuccess(false);
+                        response.setMessage("Cart item not found");
+                        // context.setResult(response);
+                        return;
+                }
+
+                // 3️⃣ If quantity <= 0 → remove item
+                if (quantity <= 0) {
+
+                        db.run(Delete.from(CartItems_.class)
+                                        .where(ci -> ci.ID().eq(cartItemId)));
+
+                        response.setSuccess(true);
+                        response.setMessage("Item removed from cart");
+
+                        // context.setResult(response);
+                        return;
+                }
+
+                // 4️⃣ Update quantity
+                db.run(
+                                Update.entity(CartItems_.class)
+                                                .data("quantity", quantity)
+                                                .where(ci -> ci.ID().eq(cartItemId)));
+
+                response.setSuccess(true);
+                response.setMessage("Cart updated");
+
+                // context.setResult(response);
+        }
+
+        @On(event = "removeCartItem")
+        public void removeCartItem(RemoveCartItemContext context) {
+
+                String cartItemId = context.getCartItemId();
+
+                ActionResponse response = ActionResponse.create();
+
+                if (cartItemId == null) {
+                        response.setSuccess(false);
+                        response.setMessage("CartItem ID required");
+                        // context.setResult(response);
+                        return;
+                }
+
+                Optional<CartItems> itemOpt = db.run(
+                                Select.from(CartItems_.class)
+                                                .where(ci -> ci.ID().eq(cartItemId)))
+                                .first();
+
+                if (itemOpt.isEmpty()) {
+
+                        response.setSuccess(false);
+                        response.setMessage("Cart item not found");
+
+                        // context.setResult(response);
+                        return;
+                }
+
+                db.run(Delete.from(CartItems_.class)
+                                .where(ci -> ci.ID().eq(cartItemId)));
+
+                response.setSuccess(true);
+                response.setMessage("Item removed successfully");
+
+                // context.setResult(response);
+        }
 
 }

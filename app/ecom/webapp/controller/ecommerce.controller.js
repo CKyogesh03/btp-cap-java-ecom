@@ -8,7 +8,7 @@ sap.ui.define([
 
 
     return Controller.extend("ecom.controller.ecommerce", {
-      onInit() {
+        onInit() {
             // 1. Initialize view model for UI state
             const oViewModel = new JSONModel({
                 SelectedCustomer: null,
@@ -17,7 +17,7 @@ sap.ui.define([
             this.getView().setModel(oViewModel, "view");
             // 2. OData model (Default model from manifest)
             // No need to manually set it here as it's usually inherited from Component.js
-            
+
             // 3. Carousel Banners (Optional)
             // If you use the static URLs I provided in the XML, you don't need this.
             // If you want to use a local JSON file for banners, keep this:
@@ -32,7 +32,7 @@ sap.ui.define([
          * Triggered by 'liveChange' in XML (if added)
          */
         onSearchValueChange(oEvent) {
-            console.log("change event in search ",oEvent)
+            console.log("change event in search ", oEvent)
             const sSearchValue = oEvent.getParameter("newValue");
             this.getView().getModel("view").setProperty("/SearchValue", sSearchValue);
         },
@@ -41,11 +41,11 @@ sap.ui.define([
          * Triggered by 'search' event in XML SearchField
          */
         onSearchButtonPressed(oEvent) {
-            console.log("search button press event -> this keyword",this)
-            console.log("search button press event -> oEvent argument",oEvent)
+            console.log("search button press event -> this keyword", this)
+            console.log("search button press event -> oEvent argument", oEvent)
             // Get value either from event or from the model
             const sSearchValue = oEvent.getParameter("query") || this.byId("searchField").getValue();
-            
+
             if (!sSearchValue) {
                 MessageToast.show("Please enter a search term");
                 return;
@@ -61,20 +61,20 @@ sap.ui.define([
          * Triggered by 'change' event in XML Select
          */
         onCustomerSelected(oEvent) {
-            console.log("select customer oEvent ",oEvent)
-            console.log("select customer oEvent ",oEvent.constructor.name)
+            console.log("select customer oEvent ", oEvent)
+            console.log("select customer oEvent ", oEvent.constructor.name)
             const oSelectedItem = oEvent.getParameter("selectedItem");
             if (!oSelectedItem) return;
 
             const oSelectedCustomer = oSelectedItem.getBindingContext().getObject();
             const sCustomername = oSelectedCustomer.name;
-            
+
             // Update view model
             this.getView().getModel("view").setProperty("/SelectedCustomer", sCustomername);
-            
+
             // Save to localStorage
             this._saveSelectedCustomer(oSelectedCustomer);
-            
+
             MessageToast.show(`Welcome, ${sCustomername}`);
         },
 
@@ -97,7 +97,7 @@ sap.ui.define([
                 if (sCustomerData) {
                     const oCustomer = JSON.parse(sCustomerData);
                     this.getView().getModel("view").setProperty("/SelectedCustomer", oCustomer.name);
-                    
+
                     // Note: If the Select items are loading from OData, 
                     // the visual selection happens automatically via the {view>/SelectedCustomer} binding.
                 }
@@ -111,5 +111,48 @@ sap.ui.define([
             // Note: Ensure "cart" is defined in your manifest.json under routing -> routes
             oRouter.navTo("cart");
         },
+        onMyOrdersPressed() {
+            const oCustomerStr = localStorage.getItem("gokart_selectedCustomer");
+
+            if (!oCustomerStr) {
+                sap.m.MessageToast.show("Please select customer first");
+                return;
+            }
+
+            const oCustomer = JSON.parse(oCustomerStr);
+
+            this.getOwnerComponent().getRouter().navTo("myOrders", {
+                customerId: oCustomer.id
+            });
+        }
+        ,
+        onProductSelected(oEvent) {
+
+            const oItem = oEvent.getSource();
+
+            const oContext = oItem.getBindingContext();
+
+            if (!oContext) {
+                MessageToast.show("Product not ready");
+                return;
+            }
+
+            const sProductId = oContext.getProperty("ID");
+
+            if (!sProductId) {
+                MessageToast.show("Invalid product");
+                return;
+            }
+
+            console.log("Navigating to product:", sProductId);
+
+            this.getOwnerComponent()
+                .getRouter()
+                .navTo("productDetailPage", {
+                    id: sProductId
+                });
+        }
+
+        ,
     });
 });

@@ -44,7 +44,18 @@
                     <core:Item key="{name}" text="{name}" />
                 </Select>
 
-                <Button icon="sap-icon://cart" type="Transparent" tooltip="Cart" press="onCartPressed" />
+                <Button
+                    icon="sap-icon://sales-order"
+                    type="Transparent"
+                    tooltip="My Orders"
+                    press="onMyOrdersPressed"/>
+                    
+                <Button
+                    icon="sap-icon://cart"
+                    type="Transparent"
+                    tooltip="Cart"
+                    press="onCartPressed"/>
+
             </tnt:ToolHeader>
 
             <VBox class="sapUiSmallMargin">
@@ -86,34 +97,101 @@
                 </HBox>
 
                 <!-- 5. PRODUCT GRID (Flipkart Card Style) -->
-                <f:GridList id="productsGrid" items="{/Products}">
-                    <f:GridListItem>
-                        <VBox class="sapUiSmallMargin">
-                            <VBox alignItems="Center" justifyContent="Center" height="180px">
-                                <!-- Bind to your imageUrl property -->
-                                <Image src="{imageUrl}" height="140px" densityAware="false" />
-                            </VBox>
-                            
-                            <VBox class="sapUiTinyMarginTop">
-                                <Title text="{name}" level="H4" wrapping="false" />
-                                <ObjectStatus text="{category}" state="Information" />
-                                
-                                <HBox alignItems="Center" justifyContent="SpaceBetween" class="sapUiTinyMarginTop">
-                                    <VBox>
-                                        <ObjectNumber 
-                                            number="{price}" 
-                                            unit="{currency_code}" 
-                                            state="Success" />
-                                        <ObjectStatus text="Free Delivery" state="Success" />
-                                    </VBox>
-                                    <Button icon="sap-icon://cart-add" type="Transparent" />
-                                </HBox>
-                            </VBox>
-                        </VBox>
-                    </f:GridListItem>
-                </f:GridList>
+               <f:GridList id="productsGrid" items="{/Products}">
+    <f:GridListItem
+        type="Active"
+        press="onProductSelected">
+
+        <VBox class="sapUiSmallMargin">
+            <VBox alignItems="Center" justifyContent="Center" height="180px">
+                <Image src="{imageUrl}" height="140px" densityAware="false"/>
+            </VBox>
+
+            <VBox class="sapUiTinyMarginTop">
+                <Title text="{name}" level="H4" wrapping="false"/>
+                <ObjectStatus text="{category}" state="Information"/>
+
+                <HBox alignItems="Center" justifyContent="SpaceBetween" class="sapUiTinyMarginTop">
+                    <VBox>
+                        <ObjectNumber
+                            number="{price}"
+                            unit="{currency_code}"
+                            state="Success"/>
+                        <ObjectStatus text="Free Delivery" state="Success"/>
+                    </VBox>
+
+                    <Button icon="sap-icon://cart-add" type="Transparent"/>
+                </HBox>
+            </VBox>
+
+        </VBox>
+
+    </f:GridListItem>
+</f:GridList>
+
 
             </VBox>
+
+            <!-- ================= FOOTER ================= -->
+<VBox class="sapUiMediumMarginTop sapUiSmallMarginBottom sapUiTinyMarginBegin sapUiTinyMarginEnd">
+
+    <Toolbar design="Transparent">
+        <Title text="Ecom" level="H4"/>
+        <ToolbarSpacer/>
+        <Text text="© 2026 Ecom Pvt Ltd. All rights reserved."/>
+    </Toolbar>
+
+    <HBox justifyContent="SpaceBetween" wrap="Wrap">
+
+        <!-- About -->
+        <VBox width="200px">
+            <Title text="About" level="H5"/>
+            <Link text="About Us"/>
+            <Link text="Careers"/>
+            <Link text="Press"/>
+            <Link text="Company Information"/>
+        </VBox>
+
+        <!-- Help -->
+        <VBox width="200px">
+            <Title text="Help" level="H5"/>
+            <Link text="Customer Support"/>
+            <Link text="Track Order"/>
+            <Link text="Returns"/>
+            <Link text="FAQ"/>
+        </VBox>
+
+        <!-- Policies -->
+        <VBox width="200px">
+            <Title text="Policies" level="H5"/>
+            <Link text="Privacy Policy"/>
+            <Link text="Terms of Use"/>
+            <Link text="Return Policy"/>
+            <Link text="Shipping Policy"/>
+        </VBox>
+
+        <!-- Contact -->
+        <VBox width="200px">
+            <Title text="Contact Us" level="H5"/>
+            <Text text="Email: support@ecom.com"/>
+            <Text text="Phone: +91 9876543210"/>
+            <Text text="Address: Chennai, India"/>
+        </VBox>
+
+        <!-- Social -->
+        <VBox width="200px">
+            <Title text="Follow Us" level="H5"/>
+            <HBox>
+                <Button icon="sap-icon://world" type="Transparent"/>
+                <Button icon="sap-icon://email" type="Transparent"/>
+                <Button icon="sap-icon://employee" type="Transparent"/>
+            </HBox>
+        </VBox>
+
+    </HBox>
+
+</VBox>
+
         </content>
     </Page>
 </mvc:View>

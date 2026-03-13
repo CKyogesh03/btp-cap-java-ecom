@@ -34,8 +34,11 @@ entity Categories : cuid, managed {
     name          : String(100);
     code          : String(50);
     parent        : Association to Categories;
-    subCategories : Composition of many Categories
-                    on subCategories.parent = $self;
+    products      : Association to many Category2ProductRel
+                    on products.category = $self;
+    child         : Composition of many Categories
+                    on child.parent = $self;
+    
 }
 
 /* ---------- PRODUCTS ---------- */
@@ -46,7 +49,8 @@ entity Products : cuid, managed {
     imageUrl    : String;
     summary     : String;
     description : String;
-    category    : Association to Categories;
+    categories : Association to many Category2ProductRel
+                 on categories.product = $self;
     currency    : Currency;
     price       : Decimal(13,2);
     status      : String(20); // APPROVED, NOT_APPROVED, REJECTED
@@ -56,6 +60,18 @@ entity Products : cuid, managed {
     reviews     : Composition of many Reviews
                   on reviews.product = $self;
 }
+
+// Category2ProductRel
+entity Category2ProductRel : cuid {
+
+    product  : Association to Products not null;
+    category : Association to Categories not null;
+
+}
+
+annotate Category2ProductRel with @unique: {
+    category, product
+};
 
 /* ---------- STOCK ---------- */
 
